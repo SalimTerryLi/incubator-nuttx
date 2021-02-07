@@ -1,0 +1,4 @@
+mkdir /vrgate_work_dir
+mkfifo /vrgate_work_dir/sico
+mkfifo /vrgate_work_dir/soci
+vrgate

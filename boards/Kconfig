@@ -1716,6 +1716,17 @@ config ARCH_BOARD_STM32F4_DISCOVERY
 	---help---
 		STMicro STM32F4-Discovery board based on the STMicro STM32F407VGT6 MCU.
 
+config ARCH_BOARD_VRGATE
+	bool "VRGATE"
+	depends on ARCH_CHIP_STM32F405RG
+	select ARCH_HAVE_BUTTONS
+	select ARCH_BUTTONS
+	select ARCH_HAVE_IRQBUTTONS
+	select ARCH_IRQBUTTONS
+
+	---help---
+		VRGATE HMD based on the STMicro STM32F405RGTx MCU.
+
 config ARCH_BOARD_STM32F411E_DISCO
 	bool "STMicro STM32F411E-Discovery board"
 	depends on ARCH_CHIP_STM32F411VE
@@ -2362,6 +2373,7 @@ config ARCH_BOARD
 	default "stm32f3discovery"         if ARCH_BOARD_STM32F3_DISCOVERY
 	default "stm32f334-disco"          if ARCH_BOARD_STM32F334_DISCO
 	default "stm32f4discovery"         if ARCH_BOARD_STM32F4_DISCOVERY
+	default "vrgate"         if ARCH_BOARD_VRGATE
 	default "stm32f411e-disco"         if ARCH_BOARD_STM32F411E_DISCO
 	default "stm32f429i-disco"         if ARCH_BOARD_STM32F429I_DISCO
 	default "stm32f746g-disco"         if ARCH_BOARD_STM32F746G_DISCO
@@ -2883,6 +2895,9 @@ source "boards/arm/stm32/stm32f429i-disco/Kconfig"
 endif
 if ARCH_BOARD_STM32F4_DISCOVERY
 source "boards/arm/stm32/stm32f4discovery/Kconfig"
+endif
+if ARCH_BOARD_VRGATE
+source "boards/arm/stm32/vrgate/Kconfig"
 endif
 if ARCH_BOARD_STM32L_DISCOVERY
 source "boards/arm/stm32/stm32ldiscovery/Kconfig"

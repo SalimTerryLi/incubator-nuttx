@@ -250,7 +250,7 @@ int stm32_flash_writeprotect(size_t page, bool enabled)
   return 0;
 }
 
-size_t up_progmem_pagesize(size_t page)
+size_t up_progmem_erasesize(size_t page)
 {
   static const size_t page_sizes[STM32_FLASH_NPAGES] = STM32_FLASH_SIZES;
 
@@ -262,6 +262,11 @@ size_t up_progmem_pagesize(size_t page)
     {
       return page_sizes[page];
     }
+}
+
+size_t up_progmem_pagesize(size_t page)
+{
+	return up_progmem_erasesize(page);
 }
 
 ssize_t up_progmem_getpage(size_t addr)
@@ -387,15 +392,9 @@ ssize_t up_progmem_eraseblock(size_t block)
 
 ssize_t up_progmem_write(size_t addr, const void *buf, size_t count)
 {
-  uint16_t *hword = (uint16_t *)buf;
+  uint8_t *byte_data = (uint8_t *)buf;
   size_t written = count;
 
-  /* STM32 requires half-word access */
-
-  if (count & 1)
-    {
-      return -EINVAL;
-    }
 
   /* Check for valid address range */
 
@@ -423,13 +422,13 @@ ssize_t up_progmem_write(size_t addr, const void *buf, size_t count)
 
   /* TODO: implement up_progmem_write() to support other sizes than 16-bits */
 
-  modifyreg32(STM32_FLASH_CR, FLASH_CR_PSIZE_MASK, FLASH_CR_PSIZE_X16);
+  modifyreg32(STM32_FLASH_CR, FLASH_CR_PSIZE_MASK, FLASH_CR_PSIZE_X8);
 
-  for (addr += STM32_FLASH_BASE; count; count -= 2, hword++, addr += 2)
+  for (addr += STM32_FLASH_BASE; count; count -= 1, byte_data++, addr += 1)
     {
-      /* Write half-word and wait to complete */
+      /* Write byte and wait to complete */
 
-      putreg16(*hword, addr);
+      putreg8(*byte_data, addr);
 
       while (getreg32(STM32_FLASH_SR) & FLASH_SR_BSY)
         {
@@ -445,7 +444,7 @@ ssize_t up_progmem_write(size_t addr, const void *buf, size_t count)
           return -EROFS;
         }
 
-      if (getreg16(addr) != *hword)
+      if (getreg8(addr) != *byte_data)
         {
           modifyreg32(STM32_FLASH_CR, FLASH_CR_PG, 0);
           sem_unlock();

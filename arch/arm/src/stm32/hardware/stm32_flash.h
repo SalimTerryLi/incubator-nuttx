@@ -117,10 +117,11 @@
 #    define STM32_FLASH_PAGESIZE      2048
 
 #  elif defined(CONFIG_STM32_STM32F20XX) || defined(CONFIG_STM32_STM32F4XXX)
-#      define STM32_FLASH_NPAGES      8
-#      define STM32_FLASH_SIZE        _K((4 * 16) + (1 * 64) + (3 * 128))
+#      define STM32_FLASH_NPAGES      12
+#      define STM32_FLASH_SIZE        _K((4 * 16) + (1 * 64) + (7 * 128))
 #      define STM32_FLASH_SIZES       {_K(16), _K(16), _K(16), _K(16), \
-                                      _K(64),_K(128), _K(128), _K(128)}
+                                      _K(64),_K(128), _K(128), _K(128), \
+                                      _K(128),_K(128), _K(128), _K(128)}
 
   /* STM32F4 has mixed page size */
 
